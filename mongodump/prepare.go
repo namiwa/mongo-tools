@@ -19,9 +19,12 @@ import (
 
 	"github.com/mongodb/mongo-tools/common/archive"
 	"github.com/mongodb/mongo-tools/common/db"
+	"github.com/mongodb/mongo-tools/common/dumprestore"
 	"github.com/mongodb/mongo-tools/common/intents"
 	"github.com/mongodb/mongo-tools/common/log"
 	"github.com/mongodb/mongo-tools/common/util"
+
+	"golang.org/x/exp/slices"
 )
 
 type NilPos struct{}
@@ -151,16 +154,7 @@ func shouldSkipSystemNamespace(dbName, collName string) bool {
 			return true
 		}
 	case "config":
-		if collName == "transactions" ||
-			collName == "system.sessions" ||
-			collName == "transaction_coordinators" ||
-			collName == "system.indexBuilds" ||
-			collName == "image_collection" ||
-			collName == "mongos" ||
-			collName == "system.preimages" ||
-			strings.HasPrefix(collName, "cache.") {
-			return true
-		}
+		return !slices.Contains(dumprestore.ConfigCollectionsToKeep, collName)
 	default:
 		if collName == "system.js" {
 			return false
@@ -409,13 +403,18 @@ func (dump *MongoDump) CreateIntentsForDatabase(dbName string) error {
 		if err != nil {
 			return fmt.Errorf("error decoding collection info: %v", err)
 		}
+
+		// This MUST precede the remaining checks since it avoids
+		// a mid-reshard backup.
+		if dbName == "config" && dump.OutputOptions.Oplog && isReshardingCollection(collInfo.Name) {
+			return fmt.Errorf("detected resharding in progress. Cannot dump with --oplog while resharding")
+		}
+
 		if shouldSkipSystemNamespace(dbName, collInfo.Name) {
 			log.Logvf(log.DebugHigh, "will not dump system collection '%s.%s'", dbName, collInfo.Name)
 			continue
 		}
-		if dbName == "config" && dump.OutputOptions.Oplog && isReshardingCollection(collInfo.Name) {
-			return fmt.Errorf("detected resharding in progress. Cannot dump with --oplog while resharding")
-		}
+
 		if dump.shouldSkipCollection(collInfo.Name) {
 			log.Logvf(log.DebugLow, "skipping dump of %v.%v, it is excluded", dbName, collInfo.Name)
 			continue
@@ -434,19 +433,40 @@ func (dump *MongoDump) CreateIntentsForDatabase(dbName string) error {
 	return colsIter.Err()
 }
 
-// CreateAllIntents iterates through all dbs and collections and builds
-// dump intents for each collection.
-func (dump *MongoDump) CreateAllIntents() error {
+func (dump *MongoDump) GetValidDbs() ([]string, error) {
+	var validDbs []string
+	dump.SessionProvider.GetSession()
 	dbs, err := dump.SessionProvider.DatabaseNames()
 	if err != nil {
-		return fmt.Errorf("error getting database names: %v", err)
+		return nil, fmt.Errorf("error getting database names: %v", err)
 	}
 	log.Logvf(log.DebugHigh, "found databases: %v", strings.Join(dbs, ", "))
+
 	for _, dbName := range dbs {
 		if dbName == "local" {
 			// local can only be explicitly dumped
 			continue
 		}
+		if dbName == "admin" && dump.isAtlasProxy {
+			// admin can't be dumped if the cluster is connected via atlas proxy
+			continue
+		}
+
+		validDbs = append(validDbs, dbName)
+	}
+
+	return validDbs, nil
+}
+
+// CreateAllIntents iterates through all dbs and collections and builds
+// dump intents for each collection. Returns the db names that the intents
+// are created from.
+func (dump *MongoDump) CreateAllIntents() error {
+	dbs, err := dump.GetValidDbs()
+	if err != nil {
+		return err
+	}
+	for _, dbName := range dbs {
 		if err := dump.CreateIntentsForDatabase(dbName); err != nil {
 			return fmt.Errorf("error creating intents for database %s: %v", dbName, err)
 		}
