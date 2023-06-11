@@ -204,6 +204,14 @@ buildvariants:
       build_tags: "sasl gssapi ssl"
     tasks: *atlas_live_tasks
 
+  - name: amazon2023-enterprise
+    display_name: Amazon Linux 2023 Enterprise
+    run_on:
+      - amazon2023-small
+    expansions:
+      build_tags: "sasl gssapi ssl"
+    tasks: *atlas_live_tasks
+
   #######################################
   #     Debian x86_64 Buildvariants     #
   #######################################
@@ -225,13 +233,21 @@ buildvariants:
     tasks: *atlas_live_tasks
 
   #######################################
-  #           macOS Buildvariant        #
+  #         macOS Buildvariants         #
   #######################################
 
-  - name: macOS-1014-ssl
-    display_name: MacOS 10.14 SSL
+  - name: macOS-1100-x86_64-ssl
+    display_name: MacOS 11.00 x86_64 SSL
     run_on:
-      - macos-1014
+      - macos-1100
+    expansions:
+      build_tags: "ssl"
+    tasks: *atlas_live_tasks
+
+  - name: macOS-1100-arm-ssl
+    display_name: MacOS 11 ARM SSL
+    run_on:
+      - macos-1100-arm64
     expansions:
       build_tags: "ssl"
     tasks: *atlas_live_tasks
@@ -312,10 +328,10 @@ buildvariants:
   #        ARM Buildvariants            #
   #######################################
 
-  - name: ubuntu1604-arm64-ssl
-    display_name: ZAP ARM64 Ubuntu 16.04 SSL
+  - name: amazon2023-aarch64-ssl
+    display_name: Amazon Linux 2023 ARM SSL
     run_on:
-      - ubuntu1604-arm64-small
+      - amazon2023-arm64-small
     stepback: false
     batchtime: 10080 # weekly
     expansions:
@@ -326,6 +342,26 @@ buildvariants:
     display_name: ZAP ARM64 Ubuntu 18.04 SSL
     run_on:
       - ubuntu1804-arm64-small
+    stepback: false
+    batchtime: 10080 # weekly
+    expansions:
+      build_tags: "ssl"
+    tasks: *atlas_live_tasks
+
+  - name: ubuntu1604-arm64-ssl
+    display_name: ZAP ARM64 Ubuntu 16.04 SSL
+    run_on:
+      - ubuntu1604-arm64-small
+    stepback: false
+    batchtime: 10080 # weekly
+    expansions:
+      build_tags: "ssl"
+    tasks: *atlas_live_tasks
+
+  - name: rhel9-arm64-ssl
+    display_name: RHEL 9 ARM SSL
+    run_on:
+      - rhel90-arm64-small
     stepback: false
     batchtime: 10080 # weekly
     expansions:
