@@ -132,10 +132,7 @@ func New(opts Options) (*MongoRestore, error) {
 	if restore.isMongos {
 		log.Logv(log.DebugLow, "restoring to a sharded system")
 	}
-	restore.isAtlasProxy, err = restore.SessionProvider.IsAtlasProxy()
-	if err != nil {
-		return nil, err
-	}
+	restore.isAtlasProxy = restore.SessionProvider.IsAtlasProxy()
 	if restore.isAtlasProxy {
 		log.Logv(log.DebugLow, "restoring to a MongoDB Atlas free or shared cluster")
 	}
@@ -403,7 +400,7 @@ func (restore *MongoRestore) Restore() Result {
 	// Create the demux before intent creation, because muted archive intents need
 	// to register themselves with the demux directly
 	if restore.InputOptions.Archive != "" {
-		restore.archive.Demux = archive.CreateDemux(restore.archive.Prelude.NamespaceMetadatas, restore.archive.In)
+		restore.archive.Demux = archive.CreateDemux(restore.archive.Prelude.NamespaceMetadatas, restore.archive.In, restore.isAtlasProxy)
 	}
 
 	switch {

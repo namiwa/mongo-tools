@@ -45,8 +45,6 @@ If you are releasing a patch or minor version but a ticket needs a major bump, s
 The only uncompleted ticket in the release should be the release ticket.
 If there are any remaining tickets that will not be included in this release, remove the fixVersion and assign them a new one if appropriate.
 
-Close the release on JIRA, adding the current date (you may need to ask the TOOLS project manager to do this).
-
 #### Update the release ticket
 Mark the release ticket as "Docs Changes Needed".
 In "Docs Changes Summary", indicate that the release notes will be found in CHANGELOG.md after the release ticket is closed.
@@ -74,11 +72,11 @@ Also ensure you are pushing the tag to the `mongodb/mongo-tools` repository and 
 If necessary, you may find the correct remote using `git remote -v` and specify it via `git push <remote> --tags`.
 
 Pushing the tag should trigger an Evergreen version that can be viewed on the [Database Tools Waterfall](https://evergreen.mongodb.com/waterfall/mongo-tools).
-If it doesn't, you may have to ask the project manager to give you the right permissions to do so.
+If it doesn't, you may have to ask a project manager/lead to give you the right permissions to do so. The permissions needed are evergreen admin and github authorized user.
 
 ##### Set Evergreen Priorities
 Some evergreen variants (particularly zSeries and PowerPC variants) may have a long schedule queue.
-To speed up release tasks, you can set the task priority for any variant to 101 for release candidates and 200 for actual releases.
+To speed up release tasks, you can set the task priority for any variant to 70 for release candidates and 99 for actual releases.
 
 ### Post-Release Tasks
 Complete these tasks after the release builds have completed on evergreen.
@@ -142,7 +140,8 @@ Bugs and feature requests can be reported in the [Database Tools Jira](https://j
 - Submit a PR with your changes under the release ticket number, and merge once approved.
 
 #### Close Release Ticket
-Move the JIRA ticket tracking this release to the "Closed" state.
+Close the [release on JIRA](https://jira.mongodb.org/projects/TOOLS/versions), adding the current date (you may need to ask the TOOLS project manager to do this).
+Once this is done, move the JIRA ticket tracking this release to the "Closed" state.
 
 #### Ensure Downstream Tickets Created
 Ensure that downstream tickets have been created in the CLOUDP/DOCSP projects and linked to the release ticket.

@@ -1,5 +1,113 @@
 # Database Tools Changelog
 
+## 100.8.0
+
+_Released 2023-08-16_
+
+We are pleased to announce version 100.8.0 of the MongoDB Database Tools.
+
+This version uploads the MongoDB Database Tools to the MongoDB Linux v7.0 repos.
+
+The Database Tools are available on the [MongoDB Download Center](https://www.mongodb.com/try/download/database-tools).
+Installation instructions and documentation can be found on [docs.mongodb.com/database-tools](https://docs.mongodb.com/database-tools/).
+Questions and inquiries can be asked on the [MongoDB Developer Community Forum](https://developer.mongodb.com/community/forums/tags/c/developer-tools/49/database-tools).
+Please make sure to tag forum posts with `database-tools`.
+Bugs and feature requests can be reported in the [Database Tools Jira](https://jira.mongodb.org/browse/TOOLS) where a list of current issues can be found.
+
+### Release
+
+<ul>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3369'>TOOLS-3369</a>] -         Release Database Tools 100.8.0
+</li>
+</ul>
+
+### Bug
+
+<ul>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3368'>TOOLS-3368</a>] -         MongoDB 7 Linux repos are missing mongodb-database-tools
+</li>
+</ul>
+
+
+## 100.7.5
+
+_Released 2023-08-07_
+
+We are pleased to announce version 100.7.5 of the MongoDB Database Tools.
+
+This version updates Go to [1.19.12](https://groups.google.com/g/golang-announce/c/X0b6CsSAaYI/m/Efv5DbZ9AwAJ). This release of Go includes a security fix to the crypto/tls package.
+
+This version no longer supports the PowerPC Ubuntu 18.04 platform.
+
+The Database Tools are available on the [MongoDB Download Center](https://www.mongodb.com/try/download/database-tools).
+Installation instructions and documentation can be found on [docs.mongodb.com/database-tools](https://docs.mongodb.com/database-tools/).
+Questions and inquiries can be asked on the [MongoDB Developer Community Forum](https://developer.mongodb.com/community/forums/tags/c/developer-tools/49/database-tools).
+Please make sure to tag forum posts with `database-tools`.
+Bugs and feature requests can be reported in the [Database Tools Jira](https://jira.mongodb.org/browse/TOOLS) where a list of current issues can be found.
+
+### Task
+
+<ul>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3349'>TOOLS-3349</a>] -         Add integration testing for mongodump/restore on config db (and other special case dbs)
+</li>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3365'>TOOLS-3365</a>] -         Release Database Tools 100.7.5 with golang 1.19.12
+</li>
+</ul>
+                          
+
+## 100.7.4
+
+_Released 2023-07-21_
+
+We are pleased to announce version 100.7.4 of the MongoDB Database Tools.
+
+This release fixes issues with mongorestore that ommitted all namespaces containing "admin" when
+restoring to an Atlas Proxy Cluster. This release also fixes an issue with mongodump where the
+process failed against clusters using Atlas Online Archive.
+
+The Database Tools are available on the [MongoDB Download Center](https://www.mongodb.com/try/download/database-tools).
+Installation instructions and documentation can be found on [docs.mongodb.com/database-tools](https://docs.mongodb.com/database-tools/).
+Questions and inquiries can be asked on the [MongoDB Developer Community Forum](https://developer.mongodb.com/community/forums/tags/c/developer-tools/49/database-tools).
+Please make sure to tag forum posts with `database-tools`.
+Bugs and feature requests can be reported in the [Database Tools Jira](https://jira.mongodb.org/browse/TOOLS) where a list of current issues can be found.
+
+### Bug
+
+<ul>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3338'>TOOLS-3338</a>] -         Mongorestore to Atlas Proxy fails for any collection containing &quot;admin&quot;
+</li>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3344'>TOOLS-3344</a>] -         Mongodump does not work with Atlas Data Federation.
+</li>
+</ul>
+
+## 100.7.3
+
+_Released 2023-06-26_
+
+We are pleased to announce version 100.7.3 of the MongoDB Database Tools.
+
+This release fixes an issue introduced in 100.7.1 where specifying `mongodump --db=confg` will not dump the entire config collection.
+
+The Database Tools are available on the [MongoDB Download Center](https://www.mongodb.com/try/download/database-tools).
+Installation instructions and documentation can be found on [docs.mongodb.com/database-tools](https://docs.mongodb.com/database-tools/).
+Questions and inquiries can be asked on the [MongoDB Developer Community Forum](https://developer.mongodb.com/community/forums/tags/c/developer-tools/49/database-tools).
+Please make sure to tag forum posts with `database-tools`.
+Bugs and feature requests can be reported in the [Database Tools Jira](https://jira.mongodb.org/browse/TOOLS) where a list of current issues can be found.
+
+### Bug
+
+<ul>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3324'>TOOLS-3324</a>] -         Fix failure to dump needed sharded collections from config database
+</li>
+</ul>
+                
+### Task
+
+<ul>
+<li>[<a href='https://jira.mongodb.org/browse/TOOLS-3319'>TOOLS-3319</a>] -         Change mongorestore so that it works with atlas proxy backup tests 
+</li>
+</ul>
+
 ## 100.7.2
 
 _Released 2023-05-30_
